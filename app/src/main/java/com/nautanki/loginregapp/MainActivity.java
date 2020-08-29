@@ -1,4 +1,5 @@
 package com.nautanki.loginregapp;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -15,14 +16,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-//kkkkk
+
 public class MainActivity extends AppCompatActivity {
     TextView textView;
     Button login_button;
@@ -59,6 +63,21 @@ public class MainActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PermissionListener permissionListener = new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        Toast.makeText(MainActivity.this,"Allowed Permission to camera",Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        Toast.makeText(MainActivity.this,"Denied Permission to camera",Toast.LENGTH_SHORT).show();
+
+                    }
+                };
+                TedPermission.with(MainActivity.this).
+                        setPermissionListener(permissionListener).
+                        setPermissions(Manifest.permission.CAMERA).check();
                 //Check if they entered un and pwd
                 username = UserName.getText().toString();
                 password = Password.getText().toString();
